@@ -1,0 +1,46 @@
+version: '3.7'
+
+volumes:
+  elasticsearch:
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.1
+    container_name: elasticsearch-chat
+    restart: always
+    deploy:
+      resources:
+        reservations:
+          memory: 512M
+        limits:
+          cpus: "0.20"
+          memory: 756M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 200m
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      discovery.type: single-node
+      cluster.name: chat
+
+  mongo:
+     container_name: mongo-chat
+     image: mongo
+     deploy:
+       resources:
+         reservations:
+           memory: 128M
+         limits:
+           cpus: "0.10"
+           memory: 256M
+     ports:
+       - "27017:27017"
+     environment:
+       MONGO_INITDB_DATABASE: rooms
+       MONGO_INITDB_ROOT_USERNAME: root
+       MONGO_INITDB_ROOT_PASSWORD: root
+
