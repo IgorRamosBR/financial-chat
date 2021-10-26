@@ -12,13 +12,16 @@ func main() {
 	ctx := context.Background()
 
 	mongoClient := clients.NewMongoClient(ctx)
-	defer clients.CloseMongoClient(ctx)
+//	defer clients.CloseMongoClient(ctx)
 
 	roomRepository := repositories.NewRoomRepository(mongoClient)
 
-	roomService := services.NewUserService(roomRepository)
+	roomService := services.NewRoomService(roomRepository)
 
 	router := routes.NewRouter(roomService)
 
-	router.Logger.Fatal(router.Start(":1323"))
+	err := router.Run(":1323")
+	if err != nil {
+		panic(err)
+	}
 }

@@ -3,17 +3,14 @@ package clients
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
-	"time"
 )
 
 var client *mongo.Client
 
 func NewMongoClient(ctx context.Context) *mongo.Client {
-	if client != nil {
+/*	if client != nil {
 		return client
 	}
 
@@ -28,17 +25,13 @@ func NewMongoClient(ctx context.Context) *mongo.Client {
 		log.Fatal(err)
 	}
 
-
-	/*
-	   List databases
-	*/
 	databases, err := client.ListDatabaseNames(ctx, bson.M{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(databases)
+	fmt.Println(databases)*/
 
-	return client
+	return nil
 }
 
 func CloseMongoClient(ctx context.Context) {

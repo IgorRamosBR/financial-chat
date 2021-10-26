@@ -4,7 +4,7 @@ import (
 	"api-chat/internal/application/dto/request"
 	"api-chat/internal/domain/models"
 	"api-chat/internal/domain/services"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
@@ -18,24 +18,24 @@ func NewChatHandler(roomService services.RoomService) ChatHandler {
 	}
 }
 
-func (h ChatHandler) CreateRoom(ctx echo.Context) error {
-	roomRequest, err := bindRoomRequest(ctx)
+func (h ChatHandler) CreateRoom(c *gin.Context) {
+	roomRequest, err := bindRoomRequest(c)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	room := models.ToRoom(roomRequest)
-	err = h.roomService.CreateRoom(ctx.Request().Context(), &room)
+	err = h.roomService.CreateRoom(c, &room)
 	if err != nil {
-		return err
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-
-	return nil
 }
 
-func bindRoomRequest(c echo.Context) (request.RoomRequest, error) {
+func bindRoomRequest(c *gin.Context) (request.RoomRequest, error) {
 	roomRequest := request.RoomRequest{}
-	err := c.Bind(&roomRequest)
+	err := c.BindJSON(&roomRequest)
 	if err != nil {
 		return request.RoomRequest{}, err
 
